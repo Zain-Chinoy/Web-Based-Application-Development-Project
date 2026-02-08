@@ -1,19 +1,19 @@
 1. Workflow: The Standardized Resume Builder
 Workflow Specification: The workflow allows the student to input personal and professional details into a structured multi-step form, visualize the result in real-time, and export a university-standardized PDF resume.
+Workflow Description:
 
+Step-by-Step Navigation:
+The user navigates to the "Student Dashboard" and clicks the "Edit Profile / Build Resume" button.
+The user is taken to a multi-step form page. They enter details into specific sections: Personal Info, Education, Skills, and Projects.
+As the user types, they see a "Live Preview" pane on the right side of the screen, which dynamically updates to show how the final document will look.
+The user clicks the "Save Profile" button. The system validates the inputs (e.g., checking for empty required fields) and saves the data to the database.
+Once saved, the user clicks the "Export as PDF" button. The system generates and downloads the file to the user’s device in the official university format.
 
-
-
-
-
-
-
-
-
-
-
-
-
+Key Features & Functionalities:
+Multi-Step Form Wizard: Breaks long data entry into manageable chunks (Step 1, Step 2, etc.).
+Live Preview Component: A React component that renders the JSON data into a document layout instantly.
+Data Validation: Prevents users from submitting incomplete profiles.
+PDF Generation: Backend utility to convert the HTML/React view into a downloadable PDF.
 
 
 
