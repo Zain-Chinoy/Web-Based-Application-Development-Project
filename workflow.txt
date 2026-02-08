@@ -23,21 +23,21 @@ Workflow Specification: The workflow allows the student to input personal and pr
 2. Workflow: The Job Application Cycle
 Workflow Specification: The workflow allows students to browse job listings using filters, apply with a single click using their stored profile, and track the status of their application from "Applied" to "Shortlisted" or "Rejected."
 
+Workflow Description:
 
+Step-by-Step Navigation:
+The user navigates to the "Job Board" page.
+The user interacts with the Search and Filter bar, selecting criteria such as "Job Type" (Internship/Full-time) or "Department" (CS/BBA) to narrow down the list.
+The user clicks on a specific Job Card to view the full Job Description and requirements.
+The user clicks the "Apply Now" button. The system automatically retrieves their saved profile (from Workflow 1) and submits it to the recruiter.
+The user is redirected to the "My Applications" page, where they see the new application listed with an "Applied" status badge.
+(Recruiter Side): The recruiter views the applicant list and changes the status. The student refreshes their dashboard to see the badge update to "Shortlisted" (Green) or "Rejected" (Red).
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+Key Features & Functionalities:
+Advanced Filtering: sorting jobs by category, salary range, or posting date.
+One-Click Apply: Removes the need to re-upload documents for every application.
+Application History: A dedicated view for students to track all past and current applications.
+Dynamic Status Badges: Visual indicators that change color based on the application state.
 
 
 
