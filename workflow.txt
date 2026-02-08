@@ -44,3 +44,28 @@ Dynamic Status Badges: Visual indicators that change color based on the applicat
 
 3. Workflow: The Time-Bound Interview Cycle
 Workflow Specification: The workflow allows a recruiter to schedule an interview which triggers a 24-hour countdown; the student must confirm within this window to finalize the slot, otherwise, the system auto-cancels the meeting.
+Workflow Description:
+
+
+Step-by-Step Navigation:
+
+The Recruiter navigates to the "Shortlisted Candidates" view and clicks "Schedule Interview."
+
+The Recruiter selects a Date and Time and sends the request.
+
+The Student receives a notification and sees the interview in their "Interviews" tab with a status of "Pending Confirmation" and a visible countdown timer.
+
+Scenario A (Success): The student logs in and clicks the "Confirm" button before the timer hits zero. The status changes to "Confirmed," and the "Join Meeting" button is scheduled to appear 15 minutes before the call.
+
+Scenario B (Timeout): If the student does not click confirm within 24 hours, the system automatically runs a check, updates the status to "Cancelled," and disables the confirmation button.
+
+
+Key Features & Functionalities:
+
+Expiration Logic: Backend check (or Cron job) that compares the current time with the request timestamp.
+
+Countdown UI: Visual representation of the remaining time for the student.
+
+Conditional Button Rendering: The "Confirm" button is only clickable if the request is active; the "Join" button only appears after confirmation.
+
+Automated Notifications: System alerts for both parties when a status changes (Confirmed or Cancelled).
