@@ -1,0 +1,46 @@
+1. Workflow: The Standardized Resume Builder
+Workflow Specification: The workflow allows the student to input personal and professional details into a structured multi-step form, visualize the result in real-time, and export a university-standardized PDF resume.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2. Workflow: The Job Application Cycle
+Workflow Specification: The workflow allows students to browse job listings using filters, apply with a single click using their stored profile, and track the status of their application from "Applied" to "Shortlisted" or "Rejected."
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3. Workflow: The Time-Bound Interview Cycle
+Workflow Specification: The workflow allows a recruiter to schedule an interview which triggers a 24-hour countdown; the student must confirm within this window to finalize the slot, otherwise, the system auto-cancels the meeting.
