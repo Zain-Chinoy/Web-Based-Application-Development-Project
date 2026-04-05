@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const resumeSchema = new mongoose.Schema({
-    studentId: { type: String, required: true, unique: true }, // One resume profile per student
+    studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
     personalInfo: {
         fullName: { type: String, required: true },
         email: { type: String, required: true },
