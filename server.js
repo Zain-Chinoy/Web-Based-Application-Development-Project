@@ -17,7 +17,7 @@ app.use(cors());
 
 // --- ROUTE PLACEHOLDERS ---
 // Areeba will uncomment this in her branch:
-// app.use('/api/resumes', require('./routes/resumeRoutes'));
+app.use('/api/resumes', require('./routes/resumeRoutes'));
 
 // Zain will uncomment this in his branch:
 app.use('/api/jobs', require('./routes/jobRoutes'));
