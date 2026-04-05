@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 const interviewSchema = new mongoose.Schema({
     jobId: { type: mongoose.Schema.Types.ObjectId, ref: 'Job', required: true },
-    studentId: { type: String, required: true },
-    recruiterId: { type: String, required: true },
+    studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    recruiterId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     scheduledDate: { type: Date, required: true },
     status: { 
         type: String, 
