@@ -20,8 +20,8 @@ app.use(cors());
 // app.use('/api/resumes', require('./routes/resumeRoutes'));
 
 // Zain will uncomment this in his branch:
-// app.use('/api/jobs', require('./routes/jobRoutes'));
-// app.use('/api/applications', require('./routes/applicationRoutes'));
+app.use('/api/jobs', require('./routes/jobRoutes'));
+app.use('/api/applications', require('./routes/applicationRoutes'));
 
 // Aafia will uncomment this in her branch:
 // app.use('/api/interviews', require('./routes/interviewRoutes'));
@@ -32,6 +32,9 @@ app.get('/', (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
+
+const { initExpirationCronJob } = require('./controllers/interviewController');
+initExpirationCronJob();
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
