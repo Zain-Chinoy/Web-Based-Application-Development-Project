@@ -20,8 +20,8 @@ app.use(cors());
 // app.use('/api/resumes', require('./routes/resumeRoutes'));
 
 // Zain will uncomment this in his branch:
-// app.use('/api/jobs', require('./routes/jobRoutes'));
-// app.use('/api/applications', require('./routes/applicationRoutes'));
+app.use('/api/jobs', require('./routes/jobRoutes'));
+app.use('/api/applications', require('./routes/applicationRoutes'));
 
 // Aafia will uncomment this in her branch:
 // app.use('/api/interviews', require('./routes/interviewRoutes'));
