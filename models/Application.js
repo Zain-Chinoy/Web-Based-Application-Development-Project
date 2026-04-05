@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 const applicationSchema = new mongoose.Schema({
     jobId: { type: mongoose.Schema.Types.ObjectId, ref: 'Job', required: true },
-    studentId: { type: String, required: true }, // Will link to User model later
-    resumeUrl: { type: String, required: true }, // Mock URL for now, linked to WF1 later
+    studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, 
+    resumeId: { type: mongoose.Schema.Types.ObjectId, ref: 'Resume', required: true },
     status: { type: String, enum: ['Applied', 'Shortlisted', 'Rejected'], default: 'Applied' }
 }, { timestamps: true });
 
