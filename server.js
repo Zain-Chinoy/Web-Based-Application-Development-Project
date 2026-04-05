@@ -24,7 +24,7 @@ app.use('/api/jobs', require('./routes/jobRoutes'));
 app.use('/api/applications', require('./routes/applicationRoutes'));
 
 // Aafia will uncomment this in her branch:
-// app.use('/api/interviews', require('./routes/interviewRoutes'));
+app.use('/api/interviews', require('./routes/interviewRoutes'));
 
 // Basic health check route
 app.get('/', (req, res) => {
