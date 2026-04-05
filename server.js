@@ -16,6 +16,7 @@ app.use(express.json());
 app.use(cors());
 
 // --- ROUTE PLACEHOLDERS ---
+app.use('/api/users', require('./routes/userRoutes'));
 // Areeba will uncomment this in her branch:
 app.use('/api/resumes', require('./routes/resumeRoutes'));
 
