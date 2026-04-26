@@ -14,3 +14,19 @@ exports.registerUser = async (req, res) => {
         res.status(400).json({ success: false, error: error.message });
     }
 };
+
+// Login User
+exports.loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
+        
+        // In a real app, we would hash/compare passwords. Keeping it simple for the prototype.
+        if (!user || user.password !== password) {
+            return res.status(401).json({ success: false, error: 'Invalid credentials' });
+        }
+        res.status(200).json({ success: true, data: user });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
