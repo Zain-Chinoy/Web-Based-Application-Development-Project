@@ -1,11 +1,10 @@
 const Resume = require('../models/Resume');
 const PDFDocument = require('pdfkit');
 
-// Create or Update Resume (Upsert logic since a student usually has one live profile)
+// Create or Update Resume (Upsert logic)
 exports.saveResume = async (req, res) => {
     try {
         const { studentId } = req.body;
-        // Find existing resume and update, or create a new one if it doesn't exist
         const resume = await Resume.findOneAndUpdate(
             { studentId }, 
             req.body, 
@@ -39,45 +38,125 @@ exports.deleteResume = async (req, res) => {
     }
 };
 
-// Dynamically Generate and Download PDF
+// Dynamically Generate and Download PDF (Upgraded for Dynamic Arrays)
 exports.generatePDF = async (req, res) => {
     try {
         const resume = await Resume.findOne({ studentId: req.params.studentId });
         if (!resume) return res.status(404).json({ success: false, error: 'Resume data missing. Please build your profile first.' });
 
-        // Initialize PDF Document
-        const doc = new PDFDocument({ margin: 50 });
+        const doc = new PDFDocument({ margin: 50, size: 'A4' });
         
-        // Set response headers to trigger a file download in the browser
         res.setHeader('Content-disposition', `attachment; filename="${resume.personalInfo.fullName.replace(/\s+/g, '_')}_Resume.pdf"`);
         res.setHeader('Content-type', 'application/pdf');
-
-        // Pipe the PDF directly to the HTTP response
         doc.pipe(res);
 
-        // Build the PDF Content (Matching CareerConnect Branding)
-        doc.fontSize(24).text(resume.personalInfo.fullName, { align: 'center' });
-        doc.fontSize(12).text(`${resume.personalInfo.email} | ${resume.personalInfo.phone}`, { align: 'center' });
-        doc.text(resume.personalInfo.address, { align: 'center' });
-        doc.moveDown();
+        // --- HEADER ---
+        doc.font('Helvetica-Bold').fontSize(22).text(resume.personalInfo.fullName.toUpperCase(), { align: 'center' }).moveDown(0.2);
+        
+        doc.font('Helvetica').fontSize(10);
+        const contactLinks = [resume.personalInfo.city, resume.personalInfo.phone, resume.personalInfo.email].filter(Boolean).join(' | ');
+        doc.text(contactLinks, { align: 'center' });
+        
+        const webLinks = [resume.personalInfo.linkedin, resume.personalInfo.github, resume.personalInfo.portfolio].filter(Boolean).join('  |  ');
+        if (webLinks) doc.text(webLinks, { align: 'center' });
+        doc.moveDown(1.5);
 
-        doc.fontSize(16).text('Education', { underline: true });
-        doc.fontSize(12).text(`${resume.education.degree} - ${resume.education.university}`);
-        doc.text(`GPA: ${resume.education.gpa} | ${resume.education.startDate} - ${resume.education.endDate}`);
-        doc.moveDown();
+        // --- DYNAMIC SECTIONS ---
+        const { sectionOrder, visibility } = resume.settings;
 
-        doc.fontSize(16).text('Skills', { underline: true });
-        doc.fontSize(12).text(resume.skills.join(', '));
-        doc.moveDown();
+        sectionOrder.forEach(section => {
+            if (!visibility[section]) return;
 
-        doc.fontSize(16).text('Projects', { underline: true });
-        resume.projects.forEach(proj => {
-            doc.fontSize(14).text(proj.title);
-            doc.fontSize(12).text(proj.description);
-            doc.moveDown(0.5);
+            // EXPERIENCE
+            if (section === 'experience' && resume.experience.length > 0) {
+                doc.font('Helvetica-Bold').fontSize(12).text('EXPERIENCE');
+                doc.moveTo(50, doc.y).lineTo(545, doc.y).stroke().moveDown(0.5);
+                
+                resume.experience.forEach(exp => {
+                    if (exp.role && exp.company) {
+                        doc.font('Helvetica-Bold').fontSize(11).text(`${exp.role} | ${exp.company}`, { continued: true });
+                        doc.font('Helvetica-Oblique').text(exp.duration, { align: 'right' });
+                        doc.font('Helvetica').fontSize(10);
+                        exp.responsibilities.forEach(resp => {
+                            if (resp) doc.text(`•  ${resp}`, { indent: 15, lineGap: 2 });
+                        });
+                        doc.moveDown(0.5);
+                    }
+                });
+            }
+
+            // EDUCATION
+            if (section === 'education' && resume.education.length > 0) {
+                doc.font('Helvetica-Bold').fontSize(12).text('EDUCATION');
+                doc.moveTo(50, doc.y).lineTo(545, doc.y).stroke().moveDown(0.5);
+
+                resume.education.forEach(edu => {
+                    if (edu.university) {
+                        doc.font('Helvetica-Bold').fontSize(11).text(edu.university, { continued: true });
+                        doc.font('Helvetica-Oblique').text(`${edu.startDate} - ${edu.endDate}`, { align: 'right' });
+                        doc.font('Helvetica').fontSize(10).text(`${edu.degree} ${edu.gpa ? `(GPA: ${edu.gpa})` : ''}`);
+                        if (edu.coursework) doc.text(`Coursework: ${edu.coursework}`);
+                        if (edu.honors) doc.text(`Honors: ${edu.honors}`);
+                        doc.moveDown(0.5);
+                    }
+                });
+            }
+
+            // PROJECTS
+            if (section === 'projects' && resume.projects.length > 0) {
+                doc.font('Helvetica-Bold').fontSize(12).text('PROJECTS');
+                doc.moveTo(50, doc.y).lineTo(545, doc.y).stroke().moveDown(0.5);
+
+                resume.projects.forEach(proj => {
+                    if (proj.title) {
+                        doc.font('Helvetica-Bold').fontSize(11).text(proj.title);
+                        doc.font('Helvetica').fontSize(10).text(proj.description, { lineGap: 2 });
+                        doc.moveDown(0.5);
+                    }
+                });
+            }
+
+            // SKILLS
+            if (section === 'skills' && resume.skills.length > 0) {
+                doc.font('Helvetica-Bold').fontSize(12).text('SKILLS');
+                doc.moveTo(50, doc.y).lineTo(545, doc.y).stroke().moveDown(0.5);
+
+                resume.skills.forEach(skill => {
+                    if (skill.category && skill.items.length > 0) {
+                        doc.font('Helvetica-Bold').fontSize(10).text(`${skill.category}: `, { continued: true });
+                        doc.font('Helvetica').text(skill.items.join(', '));
+                        doc.moveDown(0.2);
+                    }
+                });
+                doc.moveDown(0.5);
+            }
+
+            // CERTIFICATIONS & EXTRACURRICULAR (Grouped logically)
+            if (section === 'certifications' && resume.certifications.length > 0) {
+                doc.font('Helvetica-Bold').fontSize(12).text('CERTIFICATIONS');
+                doc.moveTo(50, doc.y).lineTo(545, doc.y).stroke().moveDown(0.5);
+                resume.certifications.forEach(cert => {
+                    if (cert.name) {
+                        doc.font('Helvetica-Bold').fontSize(10).text(cert.name, { continued: true });
+                        doc.font('Helvetica').text(cert.issuer ? ` — ${cert.issuer}` : '');
+                    }
+                });
+                doc.moveDown(0.5);
+            }
+
+            if (section === 'extracurricular' && resume.extracurricular.length > 0) {
+                doc.font('Helvetica-Bold').fontSize(12).text('EXTRACURRICULAR');
+                doc.moveTo(50, doc.y).lineTo(545, doc.y).stroke().moveDown(0.5);
+                resume.extracurricular.forEach(ex => {
+                    if (ex.society) {
+                        doc.font('Helvetica-Bold').fontSize(10).text(`${ex.position || 'Member'}, `, { continued: true });
+                        doc.font('Helvetica').text(ex.society);
+                    }
+                });
+                doc.moveDown(0.5);
+            }
         });
 
-        // Finalize the PDF
         doc.end();
 
     } catch (error) {
