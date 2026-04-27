@@ -49,7 +49,7 @@ Ensure you have [Node.js](https://nodejs.org/) and [MongoDB](https://www.mongodb
    npm install
 
    # Create a .env file in the root directory and add your variables:
-   MONGO_URI=mongodb+srv://admin:mongodbclusterpass@cluster0.auribn3.mongodb.net/
+   MONGO_URI=mongodb://localhost:27017/careerconnect
    PORT=5000
    ```
 
