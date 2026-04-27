@@ -1,19 +1,16 @@
 const Application = require('../models/Application');
 const Job = require('../models/Job');
 
-// Apply for a job (One-click apply logic)
 exports.applyForJob = async (req, res) => {
     try {
-        // CHANGED: extract resumeId instead of resumeUrl
-        const { jobId, studentId, resumeId } = req.body;
+        const { jobId, studentId, resumeId, customResumeName } = req.body;
 
-        // Check if job exists and is open
         const job = await Job.findById(jobId);
         if (!job) return res.status(404).json({ success: false, error: 'Job not found' });
         if (job.status !== 'Open') return res.status(400).json({ success: false, error: 'Job is no longer open' });
 
-        // CHANGED: save resumeId
-        const application = await Application.create({ jobId, studentId, resumeId });
+        // Create application with either the profile ID or the uploaded file name
+        const application = await Application.create({ jobId, studentId, resumeId, customResumeName });
         res.status(201).json({ success: true, data: application });
     } catch (error) {
         if (error.code === 11000) {
