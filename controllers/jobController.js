@@ -26,6 +26,17 @@ exports.getJobs = async (req, res) => {
     }
 };
 
+// Get a single job by ID
+exports.getJobById = async (req, res) => {
+    try {
+        const job = await Job.findById(req.params.id);
+        if (!job) return res.status(404).json({ success: false, error: 'Job not found' });
+        res.status(200).json({ success: true, data: job });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
 // Get jobs posted by a specific recruiter
 exports.getRecruiterJobs = async (req, res) => {
     try {
