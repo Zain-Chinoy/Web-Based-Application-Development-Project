@@ -15,16 +15,11 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// --- ROUTE PLACEHOLDERS ---
+// --- ALL CAREERCONNECT ROUTES ACTIVE ---
 app.use('/api/users', require('./routes/userRoutes'));
-// Areeba will uncomment this in her branch:
 app.use('/api/resumes', require('./routes/resumeRoutes'));
-
-// Zain will uncomment this in his branch:
 app.use('/api/jobs', require('./routes/jobRoutes'));
 app.use('/api/applications', require('./routes/applicationRoutes'));
-
-// Aafia will uncomment this in her branch:
 app.use('/api/interviews', require('./routes/interviewRoutes'));
 
 // Basic health check route
@@ -32,10 +27,11 @@ app.get('/', (req, res) => {
     res.send('CareerConnect API is running...');
 });
 
-const PORT = process.env.PORT || 5000;
-
+// Initialize automated 24-hour expiration cron job for interviews
 const { initExpirationCronJob } = require('./controllers/interviewController');
 initExpirationCronJob();
+
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
