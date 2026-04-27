@@ -78,4 +78,3 @@ npm run dev
 ```
 
 The application will now be running. The frontend is accessible via `http://localhost:5173` (or your Vite configured port), and the backend API is actively listening on `http://localhost:5000`.
-```
