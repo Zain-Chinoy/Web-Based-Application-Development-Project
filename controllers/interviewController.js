@@ -56,6 +56,24 @@ exports.confirmInterview = async (req, res) => {
     }
 };
 
+// Student cancels the interview
+exports.cancelInterview = async (req, res) => {
+    try {
+        const interview = await Interview.findById(req.params.id);
+        if (!interview) return res.status(404).json({ success: false, error: 'Interview not found' });
+        
+        if (interview.status !== 'Pending Confirmation') {
+            return res.status(400).json({ success: false, error: `Cannot cancel. Status is already ${interview.status}` });
+        }
+
+        interview.status = 'Cancelled';
+        await interview.save();
+        res.status(200).json({ success: true, data: interview });
+    } catch (error) {
+        res.status(400).json({ success: false, error: error.message });
+    }
+};
+
 // Get all interviews for a student
 exports.getStudentInterviews = async (req, res) => {
     try {
@@ -69,7 +87,10 @@ exports.getStudentInterviews = async (req, res) => {
 // Get all interviews for a recruiter
 exports.getRecruiterInterviews = async (req, res) => {
     try {
-        const interviews = await Interview.find({ recruiterId: req.params.recruiterId }).populate('jobId', 'title company');
+        const interviews = await Interview.find({ recruiterId: req.params.recruiterId })
+            .populate('jobId', 'title company')
+            .populate('studentId', 'name email'); // <-- ADDED THIS LINE
+            
         res.status(200).json({ success: true, count: interviews.length, data: interviews });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
