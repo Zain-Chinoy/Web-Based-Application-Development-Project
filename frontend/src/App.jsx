@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { AuthContext } from './context/AuthContext';
 import { Toaster } from 'react-hot-toast';
 
-// Auth & General
+// Auth & Resume
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import ResumeBuilder from './pages/resume/ResumeBuilder';
@@ -12,11 +12,14 @@ import ResumeBuilder from './pages/resume/ResumeBuilder';
 import StudentJobBoard from './pages/jobs/StudentJobBoard';
 import JobDetails from './pages/jobs/JobDetails';
 import MyApplications from './pages/jobs/MyApplications';
+import StudentInterviews from './pages/interviews/StudentInterviews';
 
 // Recruiter Routes
 import RecruiterDashboard from './pages/jobs/RecruiterDashboard';
 import PostJob from './pages/jobs/PostJob';
-import ReviewApplicants from './pages/jobs/ReviewApplicants'; // NEW IMPORT
+import ReviewApplicants from './pages/jobs/ReviewApplicants';
+import RecruiterInterviews from './pages/interviews/RecruiterInterviews';
+import ScheduleForm from './pages/interviews/ScheduleForm';
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useContext(AuthContext);
@@ -32,7 +35,6 @@ function App() {
       
       {user && (
         <nav className="fixed top-0 left-0 z-50 flex items-center justify-between w-full p-4 text-white bg-slate-900 border-b border-white/10">
-          
           <div className="flex items-center">
             <h1 className="text-xl font-bold">Career<span className="text-cyan-400">Connect</span></h1>
           </div>
@@ -43,12 +45,14 @@ function App() {
                     <Link to="/" className="text-sm font-medium text-slate-300 transition hover:text-white">Job Board</Link>
                     <Link to="/resume" className="text-sm font-medium text-slate-300 transition hover:text-white">Resume Builder</Link>
                     <Link to="/my-applications" className="text-sm font-medium text-slate-300 transition hover:text-white">My Applications</Link>
+                    <Link to="/interviews" className="text-sm font-medium text-slate-300 transition hover:text-white">Interviews</Link>
                   </>
               ) : (
                   <>
                     <Link to="/" className="text-sm font-medium text-slate-300 transition hover:text-white">Dashboard</Link>
                     <Link to="/post-job" className="text-sm font-medium text-slate-300 transition hover:text-white">Post a Job</Link>
                     <Link to="/applicants" className="text-sm font-medium text-slate-300 transition hover:text-white">Review Applicants</Link>
+                    <Link to="/interviews" className="text-sm font-medium text-slate-300 transition hover:text-white">Interviews</Link>
                   </>
               )}
           </div>
@@ -75,6 +79,13 @@ function App() {
             </ProtectedRoute>
           } />
 
+          {/* --- DYNAMIC INTERVIEWS ROUTE --- */}
+          <Route path="/interviews" element={
+            <ProtectedRoute>
+              {user?.role === 'Recruiter' ? <RecruiterInterviews /> : <StudentInterviews />}
+            </ProtectedRoute>
+          } />
+
           {/* Student Routes */}
           <Route path="/jobs" element={<ProtectedRoute><StudentJobBoard /></ProtectedRoute>} />
           <Route path="/job/:id" element={<ProtectedRoute><JobDetails /></ProtectedRoute>} />
@@ -84,6 +95,7 @@ function App() {
           {/* Recruiter Routes */}
           <Route path="/post-job" element={<ProtectedRoute><PostJob /></ProtectedRoute>} />
           <Route path="/applicants" element={<ProtectedRoute><ReviewApplicants /></ProtectedRoute>} />
+          <Route path="/schedule-interview/:jobId/:studentId" element={<ProtectedRoute><ScheduleForm /></ProtectedRoute>} />
         </Routes>
       </div>
     </>
